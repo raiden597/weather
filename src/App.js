@@ -23,7 +23,7 @@ function App() {
 
   const API_KEY = '0080ceb60312740ef68b6fda95b49adf';
 
-  const getForecast = async (lat, lon) => {
+  const getForecast = useCallback(async (lat, lon) => {
     try {
       const res = await fetch(
         `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${unit}`
@@ -33,7 +33,7 @@ function App() {
     } catch {
       setError('Failed to fetch forecast. Please try again.');
     }
-  };
+  }, [unit]);
 
   const getWeather = useCallback(async () => {
     if (!city) return;
@@ -50,7 +50,7 @@ function App() {
       } else {
         setWeather(data);
         setError('');
-        getForecast(data.coord.lat, data.coord.lon);
+        await getForecast(data.coord.lat, data.coord.lon);
       }
     } catch {
       setError('Failed to fetch weather. Please try again.');
@@ -58,40 +58,39 @@ function App() {
     } finally {
       setLoading(false);
     }
-  }, [city, unit]);
+  }, [city, unit, getForecast]);
 
-const getLocationWeather = useCallback(() => {
-  if (navigator.geolocation) {
-    setLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        try {
-          const res = await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=${unit}`
-          );
-          const data = await res.json();
-          setWeather(data);
-          setCity(data.name);
-          setError('');
-          await getForecast(latitude, longitude);
-        } catch {
-          setError('Failed to fetch weather data for your location.');
-          setWeather(null);
-        } finally {
+  const getLocationWeather = useCallback(() => {
+    if (navigator.geolocation) {
+      setLoading(true);
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          try {
+            const res = await fetch(
+              `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=${unit}`
+            );
+            const data = await res.json();
+            setWeather(data);
+            setCity(data.name);
+            setError('');
+            await getForecast(latitude, longitude);
+          } catch {
+            setError('Failed to fetch weather data for your location.');
+            setWeather(null);
+          } finally {
+            setLoading(false);
+          }
+        },
+        () => {
+          setError('Geolocation permission denied or unavailable.');
           setLoading(false);
         }
-      },
-      (err) => {
-        setError('Geolocation permission denied or unavailable.');
-        setLoading(false);
-      }
-    );
-  } else {
-    setError('Geolocation not available in your browser.');
-  }
-}, [unit]);
-
+      );
+    } else {
+      setError('Geolocation not available in your browser.');
+    }
+  }, [unit, getForecast]);
 
   const toggleUnit = () => {
     setUnit(unit === 'metric' ? 'imperial' : 'metric');
