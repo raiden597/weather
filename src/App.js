@@ -100,6 +100,7 @@ function App() {
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
 const debouncedGetWeather = useRef();
+const cityChangedRef = useRef(false);
 
 // Setup debounce when getWeather changes
 useEffect(() => {
@@ -119,12 +120,19 @@ useEffect(() => {
   }
 }, [city, getLocationWeather]);
 
-// Call debounced getWeather on city or unit change
+// Rename to trigger only on city change
 useEffect(() => {
+  
+  if (!cityChangedRef.current) {
+    cityChangedRef.current = true;
+    return;
+  }
+
   if (city) {
     debouncedGetWeather.current?.();
   }
-}, [city, unit]);
+}, [city]);
+
 
   const getDailyForecast = () => {
     if (!forecast || !forecast.list) return [];
