@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef  } from 'react';
+import { debounce } from 'lodash';
 import {
   Sun,
   Moon,
@@ -98,13 +99,32 @@ function App() {
 
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
-  useEffect(() => {
-    if (!city) {
-      getLocationWeather();
-    } else {
-      getWeather();
-    }
-  }, [unit, city, getLocationWeather, getWeather]);
+const debouncedGetWeather = useRef();
+
+// Setup debounce when getWeather changes
+useEffect(() => {
+  debouncedGetWeather.current = debounce(() => {
+    getWeather();
+  }, 500);
+
+  return () => {
+    debouncedGetWeather.current?.cancel();
+  };
+}, [getWeather]);
+
+// Get location weather if city is not set
+useEffect(() => {
+  if (!city) {
+    getLocationWeather();
+  }
+}, [city, getLocationWeather]);
+
+// Call debounced getWeather on city or unit change
+useEffect(() => {
+  if (city) {
+    debouncedGetWeather.current?.();
+  }
+}, [city, unit]);
 
   const getDailyForecast = () => {
     if (!forecast || !forecast.list) return [];
@@ -168,11 +188,11 @@ function App() {
           type="text"
           placeholder="Enter city"
           value={city}
-          onChange={(e) => setCity(e.target.value)}
+          onChange={(e) => setCity(e.target.value.trimStart())}
           className="border border-gray-300 p-2 rounded w-full sm:w-64 transition focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
         <button
-          onClick={getWeather}
+          onClick={() => debouncedGetWeather.current()}
           className="bg-purple-600 hover:bg-purple-700 text-white p-2 px-4 rounded transition focus:outline-none focus:ring-2 focus:ring-purple-400 font-semibold"
         >
           Get Weather
