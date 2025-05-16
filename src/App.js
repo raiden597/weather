@@ -106,7 +106,7 @@ const cityChangedRef = useRef(false);
 useEffect(() => {
   debouncedGetWeather.current = debounce(() => {
     getWeather();
-  }, 500);
+  }, 1000);
 
   return () => {
     debouncedGetWeather.current?.cancel();
@@ -115,14 +115,13 @@ useEffect(() => {
 
 // Get location weather if city is not set
 useEffect(() => {
-  if (!city) {
-    getLocationWeather();
-  }
-}, [city, getLocationWeather]);
+  getLocationWeather();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
 
 // Rename to trigger only on city change
 useEffect(() => {
-  
   if (!cityChangedRef.current) {
     cityChangedRef.current = true;
     return;
@@ -185,7 +184,7 @@ useEffect(() => {
           className="p-2 rounded-full bg-gray-700 text-yellow-300 hover:bg-gray-600 shadow-md hover:shadow-lg transition-all duration-300"
           title="Toggle dark mode"
         >
-          {isDarkMode ? <Sun className="text-yellow-400" /> : <Moon className="text-blue-500" />}
+          {isDarkMode ? <Sun className="text-yellow-400" /> : <Moon className="text-blue-400" />}
         </button>
       </div>
 
@@ -260,15 +259,15 @@ useEffect(() => {
 
     {/* Responsive container */}
     <div className="w-full overflow-x-auto sm:overflow-visible">
-      <div className="flex gap-4 justify-center sm:justify-center w-max sm:w-full mx-auto pb-2">
+      <div className="flex gap-4 sm:justify-center w-max sm:w-full mx-auto pb-2">
         {getDailyForecast().map((item, index) => (
           <div
             key={index}
-            className="min-w-[150px] flex-shrink-0 p-4 rounded-xl shadow-md border transition-transform duration-100"
+            className={`min-w-[150px] flex-shrink-0 p-4 rounded-xl shadow-md border transition-transform ${cardBg}`}
           >
             <h3 className="text-xl font-semibold">{getDayName(item.dt)}</h3>
             <div className="text-xl mb-2">{getWeatherIcon(item.description)}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-300">
+            <p className="text-xs">
               {new Date(item.dt * 1000).toLocaleDateString(undefined, {
                 month: 'short',
                 day: 'numeric',
@@ -279,10 +278,10 @@ useEffect(() => {
               alt="weather icon"
               className="mx-auto"
             />
-            <p className="capitalize text-sm text-gray-500 dark:text-gray-300">
+            <p className="capitalize text-sm ">
               {item.description}
             </p>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
+            <p className="text-lg">
               {Math.round(item.temp_max)}° / {Math.round(item.temp_min)}°{unit === 'metric' ? 'C' : 'F'}
             </p>
           </div>
@@ -291,9 +290,6 @@ useEffect(() => {
     </div>
   </div>
 )}
-
-
-
 
     </div>
     </div>

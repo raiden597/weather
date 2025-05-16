@@ -60,3 +60,31 @@
 .cen{
   justify-content: center;
 }
+
+.bg-clear {
+  background: linear-gradient(to bottom, #87ceeb, #ffffff); /* Clear sky */
+}
+
+.bg-cloudy {
+  background: linear-gradient(to bottom, #d3d3d3, #808080); /* Cloudy */
+}
+
+.bg-rainy {
+  background: linear-gradient(to bottom, #4b6cb7, #182848); /* Rainy */
+}
+
+.bg-thunder {
+  background: linear-gradient(to bottom, #373b44, #4286f4); /* Thunderstorm */
+}
+
+.bg-snowy {
+  background: linear-gradient(to bottom, #e0eafc, #cfdef3); /* Snow */
+}
+
+.bg-misty {
+  background: linear-gradient(to bottom, #606c88, #3f4c6b); /* Misty/Foggy */
+}
+
+.bg-default {
+  background: linear-gradient(to bottom, #f0f0f0, #ffffff);
+}
