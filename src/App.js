@@ -254,7 +254,7 @@ useEffect(() => {
       {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
 
       {weather && weather.main && (
-        <div className="mt-6 p-6 rounded-xl text-center transition w-full max-w-md mx-auto bg-white shadow-md border dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+        <div className="mt-6 p-6 rounded-xl bg-white/30 dark:bg-gray-900/30 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition w-full max-w-md mx-auto text-center">
           <h2 className="text-2xl font-semibold">{weather.name}</h2>
           <div className="flex flex-col items-center">
             <img
@@ -277,7 +277,7 @@ useEffect(() => {
   <ThermometerSun size={18} className="text-orange-500" />
   <p>Feels like: {weather.main.feels_like}°{unit === 'metric' ? 'C' : 'F'}</p>
 </div>
-            <p className="text-sm text-gray-400 mt-2">
+            <p className="text-sm text-gray-700 mt-2">
               Last updated: {new Date(weather.dt * 1000).toLocaleString()}
             </p>
           </div>
@@ -295,7 +295,7 @@ useEffect(() => {
         {getDailyForecast().map((item, index) => (
           <div
             key={index}
-            className="min-w-[150px] flex-shrink-0 p-4 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white transition-transform"
+            className="min-w-[150px] flex-shrink-0 p-4 rounded-xl bg-white/30 dark:bg-gray-900/30 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition-transform"
           >
             <h3 className="text-xl font-semibold">{getDayName(item.dt)}</h3>
             <div className="text-xl mb-2">{getWeatherIcon(item.description)}</div>
