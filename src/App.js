@@ -24,6 +24,28 @@ function App() {
 
   const API_KEY = '0080ceb60312740ef68b6fda95b49adf';
 
+    useEffect(() => {
+    const savedDark = localStorage.getItem('darkMode');
+    if (savedDark === 'true') {
+      setIsDarkMode(true);
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => {
+      const newMode = !prev;
+      localStorage.setItem('darkMode', newMode);
+      const html = document.documentElement;
+      if (newMode) {
+        html.classList.add('dark');
+      } else {
+        html.classList.remove('dark');
+      }
+      return newMode;
+    });
+  };
+
   const getForecast = useCallback(async (lat, lon, unitOverride) => {
   const useUnit = unitOverride || unit;
     try {
@@ -101,7 +123,6 @@ function App() {
   getWeather(newUnit); // fetch with new unit immediately
 };
 
-  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
 const debouncedGetWeather = useRef();
 const cityChangedRef = useRef(false);
@@ -176,10 +197,24 @@ useEffect(() => {
     return <Sun className="text-yellow-400" size={32} />;
   };
 
-  const cardBg = isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black';
+    // 🆕 Utility to get background class based on weather
+  const getWeatherBackground = (desc) => {
+    if (!desc) return 'bg-gradient-to-b from-blue-100 to-blue-300';
+    const condition = desc.toLowerCase();
+    if (condition.includes('rain')) return 'bg-gradient-to-b from-gray-400 to-blue-600';
+    if (condition.includes('cloud')) return 'bg-gradient-to-b from-gray-300 to-gray-500';
+    if (condition.includes('snow')) return 'bg-gradient-to-b from-blue-200 to-white';
+    if (condition.includes('clear')) return 'bg-gradient-to-b from-yellow-200 to-blue-400';
+    if (condition.includes('storm')) return 'bg-gradient-to-b from-gray-800 to-gray-600';
+    if (condition.includes('fog') || condition.includes('mist')) return 'bg-gradient-to-b from-gray-200 to-gray-400';
+    return 'bg-gradient-to-b from-blue-100 to-blue-300';
+  };
+
 
   return (
-    <div className={`${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'} transition-colors min-h-screen py-6`}>
+    <div className={`transition-colors min-h-screen py-6 text-black dark:text-white ${
+        isDarkMode ? 'dark bg-gray-900' : getWeatherBackground(weather?.weather?.[0]?.description)
+      }`}>
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
       <div className="absolute top-4 right-4">
         <button
@@ -191,7 +226,7 @@ useEffect(() => {
         </button>
       </div>
 
-      <h1 className="text-3xl sm:text-4xl font-bold text-purple-700 mb-6 text-center">🌤️ Weather App</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold text-black dark:text-white mb-6 text-center">🌤️ Weather App</h1>
 
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
         <input
@@ -199,7 +234,7 @@ useEffect(() => {
           placeholder="Enter city"
           value={city}
           onChange={(e) => setCity(e.target.value.trimStart())}
-          className="border border-gray-300 p-2 rounded w-full sm:w-64 transition focus:outline-none focus:ring-2 focus:ring-purple-400"
+          className="border border-gray-300 p-2 rounded w-full sm:w-64 transition focus:outline-none focus:ring-2 focus:ring-purple-400 dark:text-black"
         />
         <button
           onClick={toggleUnit}
@@ -212,14 +247,14 @@ useEffect(() => {
 
       {loading && (
         <div className="mt-4 flex items-center justify-center">
-          <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-purple-700 border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
 
       {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
 
       {weather && weather.main && (
-        <div className={`mt-6 p-6 rounded text-center transition w-full max-w-md mx-auto ${cardBg}`}>
+        <div className="mt-6 p-6 rounded-xl text-center transition w-full max-w-md mx-auto bg-white shadow-md border dark:border-gray-700 dark:bg-gray-800 dark:text-white">
           <h2 className="text-2xl font-semibold">{weather.name}</h2>
           <div className="flex flex-col items-center">
             <img
@@ -260,7 +295,7 @@ useEffect(() => {
         {getDailyForecast().map((item, index) => (
           <div
             key={index}
-            className={`min-w-[150px] flex-shrink-0 p-4 rounded-xl shadow-md border transition-transform ${cardBg}`}
+            className="min-w-[150px] flex-shrink-0 p-4 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white transition-transform"
           >
             <h3 className="text-xl font-semibold">{getDayName(item.dt)}</h3>
             <div className="text-xl mb-2">{getWeatherIcon(item.description)}</div>
