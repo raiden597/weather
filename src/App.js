@@ -24,10 +24,11 @@ function App() {
 
   const API_KEY = '0080ceb60312740ef68b6fda95b49adf';
 
-  const getForecast = useCallback(async (lat, lon) => {
+  const getForecast = useCallback(async (lat, lon, unitOverride) => {
+  const useUnit = unitOverride || unit;
     try {
       const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${unit}`
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${useUnit}`
       );
       const data = await res.json();
       setForecast(data);
@@ -36,13 +37,14 @@ function App() {
     }
   }, [unit]);
 
-  const getWeather = useCallback(async () => {
+  const getWeather = useCallback(async (unitOverride) => {
+  const useUnit = unitOverride || unit;
     if (!city) return;
     setLoading(true);
     setError('');
     try {
       const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=${unit}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=${useUnit}`
       );
       const data = await res.json();
       if (data.cod !== 200) {
@@ -51,7 +53,7 @@ function App() {
       } else {
         setWeather(data);
         setError('');
-        await getForecast(data.coord.lat, data.coord.lon);
+        await getForecast(data.coord.lat, data.coord.lon, useUnit);
       }
     } catch {
       setError('Failed to fetch weather. Please try again.');
@@ -75,7 +77,7 @@ function App() {
             setWeather(data);
             setCity(data.name);
             setError('');
-            await getForecast(latitude, longitude);
+            await getForecast(latitude, longitude,unit);
           } catch {
             setError('Failed to fetch weather data for your location.');
             setWeather(null);
@@ -93,9 +95,11 @@ function App() {
     }
   }, [unit, getForecast]);
 
-  const toggleUnit = () => {
-    setUnit(unit === 'metric' ? 'imperial' : 'metric');
-  };
+ const toggleUnit = () => {
+  const newUnit = unit === 'metric' ? 'imperial' : 'metric';
+  setUnit(newUnit);
+  getWeather(newUnit); // fetch with new unit immediately
+};
 
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
@@ -131,7 +135,6 @@ useEffect(() => {
     debouncedGetWeather.current?.();
   }
 }, [city]);
-
 
   const getDailyForecast = () => {
     if (!forecast || !forecast.list) return [];
@@ -190,7 +193,7 @@ useEffect(() => {
 
       <h1 className="text-3xl sm:text-4xl font-bold text-purple-700 mb-6 text-center">🌤️ Weather App</h1>
 
-      <div className="flex flex-col sm:flex-row items-center gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
         <input
           type="text"
           placeholder="Enter city"
@@ -199,14 +202,8 @@ useEffect(() => {
           className="border border-gray-300 p-2 rounded w-full sm:w-64 transition focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
         <button
-          onClick={() => debouncedGetWeather.current()}
-          className="bg-purple-600 hover:bg-purple-700 text-white p-2 px-4 rounded transition focus:outline-none focus:ring-2 focus:ring-purple-400 font-semibold"
-        >
-          Get Weather
-        </button>
-        <button
           onClick={toggleUnit}
-          className="bg-blue-600 hover:bg-blue-700 text-white p-2 px-4 rounded shadow transition focus:outline-none focus:ring-2 focus:ring-blue-400 font-semibold"
+          className="bg-purple-600 hover:bg-purple-700 text-white p-2 px-4 rounded transition focus:outline-none focus:ring-2 focus:ring-purple-400 font-semibold"
           title="Switch units"
         >
           {unit === 'metric' ? 'Switch to °F' : 'Switch to °C'}
