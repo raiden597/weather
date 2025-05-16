@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef  } from 'react';
+import './App.css'; // or wherever your CSS file is
 import { debounce } from 'lodash';
 import {
   Sun,
@@ -212,7 +213,7 @@ useEffect(() => {
 
 
   return (
-    <div className={`transition-colors min-h-screen py-6 text-black dark:text-white ${
+    <div className={`App transition-colors min-h-screen py-6 text-black dark:text-white ${
         isDarkMode ? 'dark bg-gray-900' : getWeatherBackground(weather?.weather?.[0]?.description)
       }`}>
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
