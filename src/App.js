@@ -10,6 +10,7 @@ import {
   CloudRain,
   CloudSnow,
   CloudSun,
+  CloudFog,
   Cloud,
   Zap,
 } from 'lucide-react';
@@ -188,15 +189,38 @@ useEffect(() => {
     return new Date(timestamp * 1000).toLocaleDateString('en-US', { weekday: 'short' });
   };
 
-  const getWeatherIcon = (desc) => {
-    desc = desc.toLowerCase() || '';
-    if (desc.includes('rain')) return <CloudRain className="text-blue-500" size={32} />;
-    if (desc.includes('snow')) return <CloudSnow className="text-cyan-400" size={32} />;
-    if (desc.includes('cloud') && desc.includes('sun')) return <CloudSun className="text-yellow-500" size={32} />;
-    if (desc.includes('cloud')) return <Cloud className="text-gray-500" size={32} />;
-    if (desc.includes('storm')) return <Zap className="text-yellow-600" size={32} />;
-    return <Sun className="text-yellow-400" size={32} />;
-  };
+const getWeatherIcon = (desc = '') => {
+  const condition = desc.toLowerCase();
+
+  if (condition.includes('thunderstorm') || condition.includes('storm'))
+    return <Zap className="text-yellow-600" size={32} />;
+
+  if (condition.includes('drizzle') || condition.includes('light rain'))
+    return <CloudRain className="text-blue-400" size={32} />;
+
+  if (condition.includes('rain'))
+    return <CloudRain className="text-blue-600" size={32} />;
+
+  if (condition.includes('snow'))
+    return <CloudSnow className="text-cyan-400" size={32} />;
+
+  if (condition.includes('fog') || condition.includes('mist') || condition.includes('haze'))
+    return <CloudFog className="text-gray-400" size={32} />;
+
+  if (condition.includes('cloud') && condition.includes('sun'))
+    return <CloudSun className="text-yellow-500" size={32} />;
+
+  if (condition.includes('cloud'))
+    return <Cloud className="text-gray-500" size={32} />;
+
+  if (condition.includes('tornado'))
+    return <Zap className="text-red-600" size={32} />;
+
+  if (condition.includes('wind'))
+    return <Cloud className="text-gray-400 animate-pulse" size={32} />;
+
+  return <Sun className="text-yellow-400" size={32} />;
+};
 
     // 🆕 Utility to get background class based on weather
 const getWeatherBackground = (desc = '') => {
@@ -222,11 +246,12 @@ const getWeatherBackground = (desc = '') => {
 
   if (condition.includes('fog') || condition.includes('mist') || condition.includes('haze'))
     return 'bg-gradient-to-b from-gray-200 to-gray-400';
+  
+  if (condition.includes('wind'))
+    return 'bg-gradient-to-b from-sky-300 to-gray-400';
 
   return 'bg-gradient-to-b from-blue-100 to-blue-300';
 };
-
-
 
   return (
     <div className={`App transition-colors transition-all duration-500 min-h-screen py-6 text-black dark:text-white ${
@@ -294,7 +319,7 @@ const getWeatherBackground = (desc = '') => {
   <ThermometerSun size={18} className="text-orange-500" />
   <p>Feels like: {weather.main.feels_like}°{unit === 'metric' ? 'C' : 'F'}</p>
 </div>
-            <p className="text-sm text-gray-700 mt-2">
+            <p className="text-sm text-gray-700 dark:text-gray-400 mt-2">
               Last updated: {new Date(weather.dt * 1000).toLocaleString()}
             </p>
           </div>
@@ -315,7 +340,7 @@ const getWeatherBackground = (desc = '') => {
             className="min-w-[150px] flex-shrink-0 p-4 rounded-xl bg-white/30 dark:bg-gray-800/30 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition-transform"
           >
             <h3 className="text-xl font-semibold">{getDayName(item.dt)}</h3>
-            <div className="text-xl mb-2">{getWeatherIcon(item.description)}</div>
+            <div className="flex justify-center text-xl mb-2">{getWeatherIcon(item.description)}</div>
             <p className="text-xs">
               {new Date(item.dt * 1000).toLocaleDateString(undefined, {
                 month: 'short',
