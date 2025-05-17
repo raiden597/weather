@@ -199,21 +199,37 @@ useEffect(() => {
   };
 
     // 🆕 Utility to get background class based on weather
-  const getWeatherBackground = (desc) => {
-    if (!desc) return 'bg-gradient-to-b from-blue-100 to-blue-300';
-    const condition = desc.toLowerCase();
-    if (condition.includes('rain')) return 'bg-gradient-to-b from-gray-400 to-blue-600';
-    if (condition.includes('cloud')) return 'bg-gradient-to-b from-gray-300 to-gray-500';
-    if (condition.includes('snow')) return 'bg-gradient-to-b from-blue-200 to-white';
-    if (condition.includes('clear')) return 'bg-gradient-to-b from-yellow-200 to-blue-400';
-    if (condition.includes('storm')) return 'bg-gradient-to-b from-gray-800 to-gray-600';
-    if (condition.includes('fog') || condition.includes('mist')) return 'bg-gradient-to-b from-gray-200 to-gray-400';
-    return 'bg-gradient-to-b from-blue-100 to-blue-300';
-  };
+const getWeatherBackground = (desc = '') => {
+  const condition = desc.toLowerCase();
+
+  if (condition.includes('thunderstorm') || condition.includes('storm'))
+    return 'bg-gradient-to-b from-gray-900 to-gray-700';
+
+  if (condition.includes('drizzle'))
+    return 'bg-gradient-to-b from-blue-300 to-blue-500';
+
+  if (condition.includes('rain'))
+    return 'bg-gradient-to-b from-gray-500 to-blue-700';
+
+  if (condition.includes('snow'))
+    return 'bg-gradient-to-b from-blue-100 to-white';
+
+  if (condition.includes('clear'))
+    return 'bg-gradient-to-b from-yellow-200 to-sky-400';
+
+  if (condition.includes('clouds') || condition.includes('cloud'))
+    return 'bg-gradient-to-b from-gray-300 to-gray-500';
+
+  if (condition.includes('fog') || condition.includes('mist') || condition.includes('haze'))
+    return 'bg-gradient-to-b from-gray-200 to-gray-400';
+
+  return 'bg-gradient-to-b from-blue-100 to-blue-300';
+};
+
 
 
   return (
-    <div className={`App transition-colors min-h-screen py-6 text-black dark:text-white ${
+    <div className={`App transition-colors transition-all duration-500 min-h-screen py-6 text-black dark:text-white ${
         isDarkMode ? 'dark bg-gray-900' : getWeatherBackground(weather?.weather?.[0]?.description)
       }`}>
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
@@ -255,7 +271,7 @@ useEffect(() => {
       {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
 
       {weather && weather.main && (
-        <div className="mt-6 p-6 rounded-xl bg-white/30 dark:bg-gray-900/30 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition w-full max-w-md mx-auto text-center">
+        <div className="mt-6 p-6 rounded-xl bg-white/30 dark:bg-gray-800/30 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition w-full max-w-md mx-auto text-center">
           <h2 className="text-2xl font-semibold">{weather.name}</h2>
           <div className="flex flex-col items-center">
             <img
@@ -296,7 +312,7 @@ useEffect(() => {
         {getDailyForecast().map((item, index) => (
           <div
             key={index}
-            className="min-w-[150px] flex-shrink-0 p-4 rounded-xl bg-white/30 dark:bg-gray-900/30 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition-transform"
+            className="min-w-[150px] flex-shrink-0 p-4 rounded-xl bg-white/30 dark:bg-gray-800/30 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition-transform"
           >
             <h3 className="text-xl font-semibold">{getDayName(item.dt)}</h3>
             <div className="text-xl mb-2">{getWeatherIcon(item.description)}</div>
