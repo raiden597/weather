@@ -276,7 +276,7 @@ const getWeatherBackground = (desc = '') => {
           placeholder="Enter city"
           value={city}
           onChange={(e) => setCity(e.target.value.trimStart())}
-          className="border border-gray-300 p-2 rounded w-full sm:w-64 transition focus:outline-none focus:ring-2 focus:ring-purple-400 dark:text-black"
+          className="border border-gray-300 p-2 rounded w-full sm:w-64 transition focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-black"
         />
         <button
           onClick={toggleUnit}
