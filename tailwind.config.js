@@ -9,6 +9,8 @@ module.exports = {
       fontFamily: {
         'open-sans': ['"Open Sans"', 'sans-serif'],
         'roboto': ['Roboto', 'sans-serif'],
+        'arizonia':['Arizonia','sans-serif'],
+        'noto':['Noto Sans Display', 'sans-serif']
       },
     },
   },

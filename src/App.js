@@ -268,7 +268,7 @@ const getWeatherBackground = (desc = '') => {
         </button>
       </div>
 
-      <h1 className="text-3xl sm:text-4xl font-bold text-black dark:text-white mb-6 text-center">🌤️ Weather App</h1>
+      <h1 className="text-3xl sm:text-4xl font-noto font-bold text-black dark:text-white mb-6 text-center flex items-center justify-center gap-2"><Sun className="w-8 h-8 text-black dark:text-white" /> Weather App</h1>
 
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
         <input
