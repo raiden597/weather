@@ -264,7 +264,7 @@ const getParticlesOptions = (desc = '') => {
 
   if (condition.includes('snow')) {
     return {
-      fullScreen: { enable: true, zIndex: 0 },
+      fullScreen: { enable: true, zIndex: 1 },
       particles: {
         number: { value: 100 },
         size: { value: 4 },
@@ -278,7 +278,7 @@ const getParticlesOptions = (desc = '') => {
 
   if (condition.includes('rain')) {
     return {
-      fullScreen: { enable: true, zIndex: 0 },
+      fullScreen: { enable: true, zIndex: 1 },
       particles: {
         number: { value: 150 },
         size: { value: 2 },
@@ -292,7 +292,7 @@ const getParticlesOptions = (desc = '') => {
 
   if (condition.includes('clear')) {
     return {
-      fullScreen: { enable: true, zIndex: 0 },
+      fullScreen: { enable: true, zIndex: 1 },
       particles: {
         number: { value: 20 },
         size: { value: 3 },
@@ -306,7 +306,7 @@ const getParticlesOptions = (desc = '') => {
 
   if (condition.includes('cloud')) {
     return {
-      fullScreen: { enable: true, zIndex: 0 },
+      fullScreen: { enable: true, zIndex: 1 },
       particles: {
         number: { value: 60 },
         size: { value: 20, random: { enable: true, minimumValue: 10 } },
@@ -320,7 +320,7 @@ const getParticlesOptions = (desc = '') => {
 
   if (condition.includes('mist') || condition.includes('fog') || condition.includes('haze')) {
     return {
-      fullScreen: { enable: true, zIndex: 0 },
+      fullScreen: { enable: true, zIndex: 1 },
       particles: {
         number: { value: 80 },
         size: { value: 10 },
@@ -334,7 +334,7 @@ const getParticlesOptions = (desc = '') => {
 
   if (condition.includes('thunderstorm')) {
     return {
-      fullScreen: { enable: true, zIndex: 0 },
+      fullScreen: { enable: true, zIndex: 1 },
       particles: {
         number: { value: 50 },
         size: { value: 2 },
@@ -351,7 +351,7 @@ const getParticlesOptions = (desc = '') => {
 
   if (condition.includes('wind')) {
   return {
-    fullScreen: { enable: true, zIndex: 0 },
+    fullScreen: { enable: true, zIndex: 1 },
     particles: {
       number: { value: 60 },
       size: { value: 3 },
@@ -412,7 +412,7 @@ const getParticlesOptions = (desc = '') => {
       {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
 
       {weather && weather.main && (
-        <div className="mt-6 p-6 rounded-xl bg-white/30 dark:bg-gray-800/30 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition w-full max-w-md mx-auto text-center">
+        <div className="mt-6 p-6 rounded-xl bg-white/10 dark:bg-gray-800/10 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition w-full max-w-md mx-auto text-center">
           <h2 className="text-2xl font-semibold">{weather.name}</h2>
           <div className="flex flex-col items-center">
             <img
@@ -451,7 +451,7 @@ const getParticlesOptions = (desc = '') => {
         {getDailyForecast().map((item, index) => (
           <div
             key={index}
-            className="min-w-[150px] flex-shrink-0 p-4 rounded-xl bg-white/30 dark:bg-gray-800/30 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition-transform"
+            className="min-w-[150px] flex-shrink-0 p-4 rounded-xl bg-white/10 dark:bg-gray-800/10 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition-transform"
           >
             <h3 className="text-xl font-semibold">{getDayName(item.dt)}</h3>
             <div className="flex justify-center text-xl mb-2">{getWeatherIcon(item.description)}</div>
