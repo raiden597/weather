@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef  } from 'react';
-import './App.css'; // or wherever your CSS file is
+import './App.css'; 
 import { debounce } from 'lodash';
+import Particles from "react-tsparticles";
+import { loadFull } from "tsparticles";
 import {
   Sun,
   Moon,
@@ -253,10 +255,124 @@ const getWeatherBackground = (desc = '') => {
   return 'bg-gradient-to-b from-blue-100 to-blue-300';
 };
 
+const particlesInit = async (engine) => {
+  await loadFull(engine);
+};
+
+const getParticlesOptions = (desc = '') => {
+  const condition = desc.toLowerCase();
+
+  if (condition.includes('snow')) {
+    return {
+      fullScreen: { enable: true, zIndex: 0 },
+      particles: {
+        number: { value: 100 },
+        size: { value: 4 },
+        move: { enable: true, direction: "bottom", speed: 2 },
+        opacity: { value: 0.8 },
+        shape: { type: "circle" },
+        color: { value: "#ffffff" },
+      },
+    };
+  }
+
+  if (condition.includes('rain')) {
+    return {
+      fullScreen: { enable: true, zIndex: 0 },
+      particles: {
+        number: { value: 150 },
+        size: { value: 2 },
+        move: { enable: true, direction: "bottom", speed: 10 },
+        opacity: { value: 0.5 },
+        shape: { type: "circle" },
+        color: { value: "#76b1e8" },
+      },
+    };
+  }
+
+  if (condition.includes('clear')) {
+    return {
+      fullScreen: { enable: true, zIndex: 0 },
+      particles: {
+        number: { value: 20 },
+        size: { value: 3 },
+        move: { enable: true, speed: 1 },
+        opacity: { value: 0.3 },
+        shape: { type: "circle" },
+        color: { value: "#ffd700" }, // golden sun specks
+      },
+    };
+  }
+
+  if (condition.includes('cloud')) {
+    return {
+      fullScreen: { enable: true, zIndex: 0 },
+      particles: {
+        number: { value: 60 },
+        size: { value: 20, random: { enable: true, minimumValue: 10 } },
+        move: { enable: true, speed: 0.3, direction: "right" },
+        opacity: { value: 0.1 },
+        shape: { type: "circle" },
+        color: { value: "#ccc" },
+      },
+    };
+  }
+
+  if (condition.includes('mist') || condition.includes('fog') || condition.includes('haze')) {
+    return {
+      fullScreen: { enable: true, zIndex: 0 },
+      particles: {
+        number: { value: 80 },
+        size: { value: 10 },
+        move: { enable: true, speed: 0.2 },
+        opacity: { value: 0.1 },
+        shape: { type: "circle" },
+        color: { value: "#a8a8a8" },
+      },
+    };
+  }
+
+  if (condition.includes('thunderstorm')) {
+    return {
+      fullScreen: { enable: true, zIndex: 0 },
+      particles: {
+        number: { value: 50 },
+        size: { value: 2 },
+        move: { enable: true, speed: 5 },
+        opacity: { value: 0.7 },
+        shape: { type: "circle" },
+        color: { value: "#ffffff" },
+      },
+      background: {
+        color: "#000000",
+      },
+    };
+  }
+
+  if (condition.includes('wind')) {
+  return {
+    fullScreen: { enable: true, zIndex: 0 },
+    particles: {
+      number: { value: 60 },
+      size: { value: 3 },
+      move: { enable: true, direction: "right", speed: 3 },
+      opacity: { value: 0.3 },
+      shape: { type: "triangle" },
+      color: { value: "#d0e7ff" },
+    },
+  };
+}
+
+  return null;
+};
+
+
+  const backgroundClass = isDarkMode ? 'dark bg-gray-900' : getWeatherBackground(weather?.weather?.[0]?.description);
+  const particlesOptions = getParticlesOptions(weather?.weather?.[0]?.description);
+
   return (
-    <div className={`App transition-colors transition-all duration-500 min-h-screen py-6 text-black dark:text-white ${
-        isDarkMode ? 'dark bg-gray-900' : getWeatherBackground(weather?.weather?.[0]?.description)
-      }`}>
+    <div className={`App relative min-h-screen py-6 transition-all duration-500 ${backgroundClass}`}>
+      {particlesOptions && <Particles className="absolute inset-0" init={particlesInit} options={particlesOptions} />}
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
       <div className="absolute top-4 right-4">
         <button
@@ -276,11 +392,11 @@ const getWeatherBackground = (desc = '') => {
           placeholder="Enter city"
           value={city}
           onChange={(e) => setCity(e.target.value.trimStart())}
-          className="border border-gray-300 p-2 rounded w-full sm:w-64 transition focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-black"
+          className="z-10 border border-gray-300 p-2 rounded w-full sm:w-64 transition focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-black"
         />
         <button
           onClick={toggleUnit}
-          className="bg-transparent shadow-md border border-white/20 text-white p-2 px-4 rounded transition focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white font-semibold"
+          className="z-10 bg-transparent shadow-md border border-white/20 text-white p-2 px-4 rounded transition focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white font-semibold"
           title="Switch units"
         >
           {unit === 'metric' ? 'Switch to °F' : 'Switch to °C'}
@@ -330,8 +446,6 @@ const getWeatherBackground = (desc = '') => {
 {forecast && forecast.list && (
   <div className="mt-6 p-6 rounded text-center">
     <h2 className="text-2xl font-semibold mb-4">5-Day Forecast</h2>
-
-    {/* Responsive container */}
     <div className="w-full overflow-x-auto sm:overflow-visible">
       <div className="flex gap-4 sm:justify-center w-max sm:w-full mx-auto pb-2">
         {getDailyForecast().map((item, index) => (
