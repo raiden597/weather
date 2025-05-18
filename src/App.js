@@ -241,7 +241,7 @@ const getWeatherBackground = (desc = '') => {
     return 'bg-gradient-to-b from-blue-100 to-white';
 
   if (condition.includes('clear'))
-    return 'bg-gradient-to-b from-yellow-200 to-sky-400';
+    return 'bg-gradient-to-b from-sky-100 to-sky-400';
 
   if (condition.includes('clouds') || condition.includes('cloud'))
     return 'bg-gradient-to-b from-gray-300 to-gray-500';
@@ -266,12 +266,12 @@ const getParticlesOptions = (desc = '') => {
     return {
       fullScreen: { enable: true, zIndex: 1 },
       particles: {
-        number: { value: 100 },
+        number: { value: 120 },
         size: { value: 4 },
-        move: { enable: true, direction: "bottom", speed: 2 },
-        opacity: { value: 0.8 },
+        move: { enable: true, direction: "bottom", speed: 1.5 },
+        opacity: { value: 0.7 },
         shape: { type: "circle" },
-        color: { value: "#ffffff" },
+        color: { value: "#e0f7fa" },
       },
     };
   }
@@ -280,12 +280,12 @@ const getParticlesOptions = (desc = '') => {
     return {
       fullScreen: { enable: true, zIndex: 1 },
       particles: {
-        number: { value: 150 },
+        number: { value: 200 },
         size: { value: 2 },
-        move: { enable: true, direction: "bottom", speed: 10 },
-        opacity: { value: 0.5 },
+        move: { enable: true, direction: "bottom", speed: 8 },
+        opacity: { value: 0.4 },
         shape: { type: "circle" },
-        color: { value: "#76b1e8" },
+        color: { value: "#89c4f4" },
       },
     };
   }
@@ -294,10 +294,10 @@ const getParticlesOptions = (desc = '') => {
     return {
       fullScreen: { enable: true, zIndex: 1 },
       particles: {
-        number: { value: 20 },
-        size: { value: 3 },
+        number: { value: 40 },
+        size: { value: 3, random: { enable: true, minimumValue: 2 } },
         move: { enable: true, speed: 1 },
-        opacity: { value: 0.3 },
+        opacity: { value: 0.4 },
         shape: { type: "circle" },
         color: { value: "#ffd700" }, // golden sun specks
       },
@@ -308,12 +308,12 @@ const getParticlesOptions = (desc = '') => {
     return {
       fullScreen: { enable: true, zIndex: 1 },
       particles: {
-        number: { value: 60 },
+        number: { value: 70 },
         size: { value: 20, random: { enable: true, minimumValue: 10 } },
-        move: { enable: true, speed: 0.3, direction: "right" },
-        opacity: { value: 0.1 },
+        move: { enable: true, speed: 0.4, direction: "right" },
+        opacity: { value: 0.12 },
         shape: { type: "circle" },
-        color: { value: "#ccc" },
+        color: { value: "#b0c4de" },
       },
     };
   }
@@ -322,12 +322,12 @@ const getParticlesOptions = (desc = '') => {
     return {
       fullScreen: { enable: true, zIndex: 1 },
       particles: {
-        number: { value: 80 },
-        size: { value: 10 },
+        number: { value: 90 },
+        size: { value: 12 },
         move: { enable: true, speed: 0.2 },
         opacity: { value: 0.1 },
         shape: { type: "circle" },
-        color: { value: "#a8a8a8" },
+        color: { value: "#cfcfcf" },
       },
     };
   }
@@ -336,12 +336,12 @@ const getParticlesOptions = (desc = '') => {
     return {
       fullScreen: { enable: true, zIndex: 1 },
       particles: {
-        number: { value: 50 },
+        number: { value: 60 },
         size: { value: 2 },
-        move: { enable: true, speed: 5 },
-        opacity: { value: 0.7 },
+        move: { enable: true, speed: 6 },
+        opacity: { value: 0.6 },
         shape: { type: "circle" },
-        color: { value: "#ffffff" },
+        color: { value: "fffb91" },
       },
       background: {
         color: "#000000",
@@ -353,12 +353,12 @@ const getParticlesOptions = (desc = '') => {
   return {
     fullScreen: { enable: true, zIndex: 1 },
     particles: {
-      number: { value: 60 },
+      number: { value: 70 },
       size: { value: 3 },
-      move: { enable: true, direction: "right", speed: 3 },
-      opacity: { value: 0.3 },
+      move: { enable: true, direction: "right", speed: 4 },
+      opacity: { value: 0.25 },
       shape: { type: "triangle" },
-      color: { value: "#d0e7ff" },
+      color: { value: ["#d0e7ff", "#b0dfff"]  },
     },
   };
 }
