@@ -295,11 +295,11 @@ const getParticlesOptions = (desc = '') => {
       fullScreen: { enable: true, zIndex: 1 },
       particles: {
         number: { value: 40 },
-        size: { value: 3, random: { enable: true, minimumValue: 2 } },
+        size: { value: 3, random: { enable: true, minimumValue: 4 } },
         move: { enable: true, speed: 1 },
         opacity: { value: 0.4 },
         shape: { type: "circle" },
-        color: { value: "#ffd700" }, // golden sun specks
+        color: { value: "#ef8e38" }, // golden sun specks
       },
     };
   }
@@ -405,7 +405,7 @@ const getParticlesOptions = (desc = '') => {
 
       {loading && (
         <div className="mt-4 flex items-center justify-center">
-          <div className="w-8 h-8 border-4 border-purple-700 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-blue-700 border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
 
@@ -445,7 +445,7 @@ const getParticlesOptions = (desc = '') => {
 
 {forecast && forecast.list && (
   <div className="mt-6 p-6 rounded text-center">
-    <h2 className="text-2xl font-semibold mb-4">5-Day Forecast</h2>
+    <h2 className="text-2xl font-semibold mb-4 dark:text-white">5-Day Forecast</h2>
     <div className="w-full overflow-x-auto sm:overflow-visible">
       <div className="flex gap-4 sm:justify-center w-max sm:w-full mx-auto pb-2">
         {getDailyForecast().map((item, index) => (
