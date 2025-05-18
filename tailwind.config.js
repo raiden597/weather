@@ -10,7 +10,8 @@ module.exports = {
         'open-sans': ['"Open Sans"', 'sans-serif'],
         'roboto': ['Roboto', 'sans-serif'],
         'arizonia':['Arizonia','sans-serif'],
-        'noto':['Noto Sans Display', 'sans-serif']
+        'noto':['Noto Sans Display', 'sans-serif'],
+        'lato':['Lato','sans-serif']
       },
     },
   },
