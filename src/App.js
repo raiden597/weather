@@ -280,7 +280,7 @@ const getWeatherBackground = (desc = '') => {
         />
         <button
           onClick={toggleUnit}
-          className="bg-purple-600 hover:bg-purple-700 text-white p-2 px-4 rounded transition focus:outline-none focus:ring-2 focus:ring-purple-400 font-semibold"
+          className="bg-transparent shadow-md border border-white/20 text-white p-2 px-4 rounded transition focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white font-semibold"
           title="Switch units"
         >
           {unit === 'metric' ? 'Switch to °F' : 'Switch to °C'}
