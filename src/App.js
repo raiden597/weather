@@ -17,6 +17,10 @@ import {
   Zap,
   Sunrise,
   Sunset,
+  Smile,
+  Meh,
+  Frown,
+  Skull,
 } from 'lucide-react';
 
 function App() {
@@ -143,11 +147,6 @@ function App() {
   getWeather(newUnit); // fetch with new unit immediately
 };
 
-const getAqiLabel = (index) => {
-    const labels = ["Good", "Fair", "Moderate", "Poor", "Very Poor"];
-    return labels[index - 1] || "Unknown";
-  };
-
 const debouncedGetWeather = useRef();
 const cityChangedRef = useRef(false);
 
@@ -234,6 +233,19 @@ const sunset = weather
       minute: '2-digit',
     })
   : '';
+
+const getAqiLabel = (index) => {
+  const levels = [
+    { label: "Good", icon: <Smile className="inline w-5 h-5 text-green-500" /> },
+    { label: "Fair", icon: <Meh className="inline w-5 h-5 text-yellow-400" /> },
+    { label: "Moderate", icon: <Meh className="inline w-5 h-5 text-orange-400" /> },
+    { label: "Poor", icon: <Frown className="inline w-5 h-5 text-red-500" /> },
+    { label: "Very Poor", icon: <Skull className="inline w-5 h-5 text-purple-700" /> },
+  ];
+
+  return levels[index - 1] || { label: "Unknown", icon: null };
+};
+
 
 const getWeatherIcon = (desc = '') => {
   const condition = desc.toLowerCase();
@@ -410,7 +422,6 @@ const getParticlesOptions = (desc = '') => {
   return null;
 };
 
-
   const backgroundClass = isDarkMode ? 'dark bg-gray-900' : getWeatherBackground(weather?.weather?.[0]?.description);
   const particlesOptions = getParticlesOptions(weather?.weather?.[0]?.description);
 
@@ -496,17 +507,22 @@ const getParticlesOptions = (desc = '') => {
         </div>
       )}
 
-      {aqi && (
-                <div className="mt-6 p-6 rounded-xl bg-white/10 dark:bg-gray-800/10 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition w-full max-w-md mx-auto text-center">
-                  <h4 className="text-xl font-semibold">Air Quality Index</h4>
-                  <p className="text-lg">
-                    {getAqiLabel(aqi.main.aqi)} (Level {aqi.main.aqi})
-                  </p>
-                  <div className="text-sm text-gray-700 dark:text-gray-400 mt-2">
-                    PM2.5: {aqi.components.pm2_5} µg/m³ | PM10: {aqi.components.pm10} µg/m³
-                  </div>
-                </div>
-              )}
+    {aqi && (() => {
+  const aqiData = getAqiLabel(aqi.main.aqi);
+  return (
+    <div className="mt-6 p-6 rounded-xl bg-white/10 dark:bg-gray-800/10 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition w-full max-w-md mx-auto text-center">
+      <h4 className="text-xl font-semibold">Air Quality Index</h4>
+      <p className="text-lg flex items-center justify-center gap-2">
+        {aqiData.icon}
+        <span>{aqiData.label}</span> (Level {aqi.main.aqi})
+      </p>
+      <div className="text-sm text-gray-700 dark:text-gray-400 mt-2">
+        PM2.5: {aqi.components.pm2_5} µg/m³ | PM10: {aqi.components.pm10} µg/m³
+      </div>
+    </div>
+  );
+})()}
+
 
 
 {forecast && forecast.list && (
