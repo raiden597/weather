@@ -15,6 +15,8 @@ import {
   CloudFog,
   Cloud,
   Zap,
+  Sunrise,
+  Sunset,
 } from 'lucide-react';
 
 function App() {
@@ -25,6 +27,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [unit, setUnit] = useState('metric');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [aqi,setAqi] = useState(null);
 
   const API_KEY = '0080ceb60312740ef68b6fda95b49adf';
 
@@ -48,6 +51,19 @@ function App() {
       }
       return newMode;
     });
+  };
+
+  const getAqi = async (lat, lon) => {
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+      );
+      const data = await res.json();
+      setAqi(data.list[0]);
+    } catch (err) {
+      console.error("Failed to fetch AQI:", err);
+      setAqi(null);
+    }
   };
 
   const getForecast = useCallback(async (lat, lon, unitOverride) => {
@@ -127,9 +143,23 @@ function App() {
   getWeather(newUnit); // fetch with new unit immediately
 };
 
+const getAqiLabel = (index) => {
+    const labels = ["Good", "Fair", "Moderate", "Poor", "Very Poor"];
+    return labels[index - 1] || "Unknown";
+  };
 
 const debouncedGetWeather = useRef();
 const cityChangedRef = useRef(false);
+
+// Setup for calling the AQI
+useEffect(() => {
+  if (weather && weather.coord) {
+    getAqi(weather.coord.lat, weather.coord.lon);
+  } else {
+    setAqi(null); // clear AQI when no coords
+  }
+}, [weather]);
+
 
 // Setup debounce when getWeather changes
 useEffect(() => {
@@ -190,6 +220,20 @@ useEffect(() => {
   const getDayName = (timestamp) => {
     return new Date(timestamp * 1000).toLocaleDateString('en-US', { weekday: 'short' });
   };
+
+const sunrise = weather
+  ? new Date(weather.sys.sunrise * 1000).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  : '';
+
+const sunset = weather
+  ? new Date(weather.sys.sunset * 1000).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  : '';
 
 const getWeatherIcon = (desc = '') => {
   const condition = desc.toLowerCase();
@@ -433,15 +477,36 @@ const getParticlesOptions = (desc = '') => {
 </div>
 
 <div className="flex items-center gap-2">
-  <ThermometerSun size={18} className="text-orange-500" />
+  <ThermometerSun size={18} className="text-rose-400" />
   <p>Feels like: {weather.main.feels_like}°{unit === 'metric' ? 'C' : 'F'}</p>
 </div>
+<div className="flex items-center gap-2">
+  <Sunrise size={18} className="text-amber-400" />
+  <p>Sunrise: {sunrise}</p>
+  </div>
+  <div className="flex items-center gap-2">
+  <Sunset size={18} className="text-orange-500" />
+  <p>Sunset: {sunset}</p>
+  </div>
+
             <p className="text-sm text-gray-700 dark:text-gray-400 mt-2">
               Last updated: {new Date(weather.dt * 1000).toLocaleString()}
             </p>
           </div>
         </div>
       )}
+
+      {aqi && (
+                <div className="mt-6 p-6 rounded-xl bg-white/10 dark:bg-gray-800/10 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition w-full max-w-md mx-auto text-center">
+                  <h4 className="text-xl font-semibold">Air Quality Index</h4>
+                  <p className="text-lg">
+                    {getAqiLabel(aqi.main.aqi)} (Level {aqi.main.aqi})
+                  </p>
+                  <div className="text-sm text-gray-700 dark:text-gray-400 mt-2">
+                    PM2.5: {aqi.components.pm2_5} µg/m³ | PM10: {aqi.components.pm10} µg/m³
+                  </div>
+                </div>
+              )}
 
 
 {forecast && forecast.list && (
