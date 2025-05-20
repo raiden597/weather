@@ -418,6 +418,7 @@ const getParticlesOptions = (desc = '') => {
             <img
               src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
               alt="weather icon"
+              className="w-20 h-20"
             />
             <p className="text-lg">{weather.main.temp}°{unit === 'metric' ? 'C' : 'F'}</p>
             <p className="text-lg capitalize">{weather.weather[0].description}</p>
@@ -464,7 +465,7 @@ const getParticlesOptions = (desc = '') => {
             <img
               src={`https://openweathermap.org/img/wn/${item.icon}@2x.png`}
               alt="weather icon"
-              className="mx-auto"
+              className="w-20 h-20 mx-auto"
             />
             <p className="capitalize text-sm ">
               {item.description}
