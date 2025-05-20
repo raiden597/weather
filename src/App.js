@@ -85,7 +85,10 @@ function App() {
 
   const getWeather = useCallback(async (unitOverride) => {
   const useUnit = unitOverride || unit;
-    if (!city) return;
+  const trimmedCity = city.trim();  // Trim leading and trailing spaces
+
+  if (!trimmedCity) return;
+  
     setLoading(true);
     setError('');
     try {
@@ -446,7 +449,7 @@ const getParticlesOptions = (desc = '') => {
           type="text"
           placeholder="Enter city"
           value={city}
-          onChange={(e) => setCity(e.target.value.trimStart())}
+          onChange={(e) => setCity(e.target.value)}
           className="z-10 border border-gray-300 p-2 rounded w-full sm:w-64 transition focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-black"
         />
         <button
@@ -533,7 +536,7 @@ const getParticlesOptions = (desc = '') => {
         {getDailyForecast().map((item, index) => (
           <div
             key={index}
-            className="min-w-[150px] flex-shrink-0 p-4 rounded-xl bg-white/10 dark:bg-gray-800/10 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition-transform"
+            className="min-w-[150px] flex-shrink-0 p-4 rounded-xl bg-white/10 dark:bg-gray-800/10 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-md text-black dark:text-white transition"
           >
             <h3 className="text-xl font-semibold">{getDayName(item.dt)}</h3>
             <div className="flex justify-center text-xl mb-2">{getWeatherIcon(item.description)}</div>
