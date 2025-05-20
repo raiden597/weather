@@ -57,19 +57,6 @@ function App() {
     });
   };
 
-  const getAqi = async (lat, lon) => {
-    try {
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
-      );
-      const data = await res.json();
-      setAqi(data.list[0]);
-    } catch (err) {
-      console.error("Failed to fetch AQI:", err);
-      setAqi(null);
-    }
-  };
-
   const getForecast = useCallback(async (lat, lon, unitOverride) => {
   const useUnit = unitOverride || unit;
     try {
@@ -88,12 +75,12 @@ function App() {
   const trimmedCity = city.trim();  // Trim leading and trailing spaces
 
   if (!trimmedCity) return;
-  
+
     setLoading(true);
     setError('');
     try {
       const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=${useUnit}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(trimmedCity)}&appid=${API_KEY}&units=${useUnit}`
       );
       const data = await res.json();
       if (data.cod !== 200) {
@@ -149,6 +136,20 @@ function App() {
   setUnit(newUnit);
   getWeather(newUnit); // fetch with new unit immediately
 };
+
+  const getAqi = async (lat, lon) => {
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+      );
+      const data = await res.json();
+      console.log("AQI Response:", data); 
+      setAqi(data.list[0]);
+    } catch (err) {
+      console.error("Failed to fetch AQI:", err);
+      setAqi(null);
+    }
+  };
 
 const debouncedGetWeather = useRef();
 const cityChangedRef = useRef(false);
@@ -356,9 +357,9 @@ const getParticlesOptions = (desc = '') => {
         number: { value: 40 },
         size: { value: 3, random: { enable: true, minimumValue: 4 } },
         move: { enable: true, speed: 1 },
-        opacity: { value: 0.4 },
+        opacity: { value: 0.5 },
         shape: { type: "circle" },
-        color: { value: "#ef8e38" }, // golden sun specks
+        color: { value: "#fff" }, // golden sun specks #ef8e38
       },
     };
   }
