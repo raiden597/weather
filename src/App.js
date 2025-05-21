@@ -32,6 +32,8 @@ function App() {
   const [unit, setUnit] = useState('metric');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [aqi,setAqi] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
+
 
   const API_KEY = '0080ceb60312740ef68b6fda95b49adf';
 
@@ -154,7 +156,7 @@ function App() {
 const debouncedGetWeather = useRef();
 const cityChangedRef = useRef(false);
 
-// Setup for calling the AQI
+// Setup for calling the AQI api
 useEffect(() => {
   if (weather && weather.coord) {
     getAqi(weather.coord.lat, weather.coord.lon);
@@ -168,7 +170,7 @@ useEffect(() => {
 useEffect(() => {
   debouncedGetWeather.current = debounce(() => {
     getWeather();
-  }, 1000);
+  }, 500);
 
   return () => {
     debouncedGetWeather.current?.cancel();
@@ -222,6 +224,37 @@ useEffect(() => {
 
   const getDayName = (timestamp) => {
     return new Date(timestamp * 1000).toLocaleDateString('en-US', { weekday: 'short' });
+  };
+
+  const fetchSuggestions = async (query) => {
+  if (!query) {
+    setSuggestions([]);
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${API_KEY}`
+    );
+    const data = await res.json();
+    setSuggestions(data);
+  } catch (err) {
+    console.error("Error fetching suggestions:", err);
+    setSuggestions([]);
+  }
+};
+
+console.log('Suggestions:', suggestions);
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setCity(value);
+    fetchSuggestions(value.trimStart());
+  };
+
+  const handleSuggestionClick = (s) => {
+    setCity(`${s.name}${s.state ? `, ${s.state}` : ''}, ${s.country}`);
+    setSuggestions([]);
   };
 
 const sunrise = weather
@@ -446,13 +479,29 @@ const getParticlesOptions = (desc = '') => {
       <h1 className="text-3xl sm:text-4xl font-noto font-bold text-black dark:text-white mb-6 text-center flex items-center justify-center gap-2"><Sun className="w-8 h-8 text-black dark:text-white" /> Weather App</h1>
 
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
+      <div className="relative">
         <input
           type="text"
           placeholder="Enter city"
           value={city}
-          onChange={(e) => setCity(e.target.value)}
+          onChange={handleInputChange}
           className="z-10 border border-gray-300 p-2 rounded w-full sm:w-64 transition focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-black"
         />
+
+        {suggestions.length > 0 && (
+          <ul className="absolute top-full left-0 right-0 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 mt-1 rounded shadow z-50 max-h-60 overflow-y-auto">
+            {suggestions.map((s, idx) => (
+              <li
+                key={idx}
+                className="p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white"
+                onClick={() => handleSuggestionClick(s)}
+              >
+                {s.name}{s.state ? `, ${s.state}` : ''}, {s.country}
+              </li>
+            ))}
+          </ul>
+        )}
+</div>
         <button
           onClick={toggleUnit}
           className="z-10 bg-transparent shadow-md border border-white/20 text-white p-2 px-4 rounded transition focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white font-semibold"
@@ -460,6 +509,7 @@ const getParticlesOptions = (desc = '') => {
         >
           {unit === 'metric' ? 'Switch to °F' : 'Switch to °C'}
         </button>
+        
       </div>
 
       {loading && (
