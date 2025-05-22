@@ -590,7 +590,7 @@ const getParticlesOptions = (desc = '') => {
 
 
 {forecast && forecast.list && (
-  <div className="mt-6 p-6 rounded text-center">
+  <div className="mt-4 p-4 rounded text-center">
     <h2 className="text-2xl font-semibold mb-4 dark:text-white">5-Day Forecast</h2>
     <div className="w-full overflow-x-auto sm:overflow-visible">
       <div className="flex gap-4 sm:justify-center w-max sm:w-full mx-auto pb-2">
