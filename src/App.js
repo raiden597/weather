@@ -144,8 +144,7 @@ function App() {
       const res = await fetch(
         `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
       );
-      const data = await res.json();
-      console.log("AQI Response:", data); 
+      const data = await res.json(); 
       setAqi(data.list[0]);
     } catch (err) {
       console.error("Failed to fetch AQI:", err);
@@ -496,7 +495,7 @@ const getParticlesOptions = (desc = '') => {
           placeholder="Enter city"
           value={city}
           onChange={handleInputChange}
-          className="flex-grow z-10 border border-gray-300 p-2 rounded w-full sm:w-64 transition focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-black"
+          className="z-10 border border-gray-300 p-2 rounded w-full transition focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-black"
         />
 
         {suggestions.length > 0 && (
