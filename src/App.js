@@ -329,33 +329,49 @@ const getWeatherIcon = (desc = '') => {
 
     // 🆕 Utility to get background class based on weather
 const getWeatherBackground = (desc = '') => {
-  const condition = desc.toLowerCase();
+  const condition = desc.toLowerCase().trim();
 
-  if (condition.includes('thunderstorm') || condition.includes('storm'))
+  if (condition.includes('thunderstorm') || condition.includes('storm') || condition.includes('squall'))
     return 'bg-gradient-to-b from-gray-900 to-gray-700';
 
   if (condition.includes('drizzle'))
     return 'bg-gradient-to-b from-blue-300 to-blue-500';
 
-  if (condition.includes('rain'))
-    return 'bg-gradient-to-b from-gray-500 to-blue-700';
+  if (condition.includes('rain') || condition.includes('shower'))
+    return 'bg-gradient-to-b from-blue-400 to-blue-700';
 
-  if (condition.includes('snow'))
+  if (condition.includes('snow') || condition.includes('sleet'))
     return 'bg-gradient-to-b from-blue-100 to-white';
 
-  if (condition.includes('clear'))
-    return 'bg-gradient-to-b from-sky-100 to-sky-400';
+  if (condition.includes('clear') || condition.includes('sunny'))
+    return 'bg-gradient-to-b from-sky-200 to-sky-500';
 
-  if (condition.includes('clouds') || condition.includes('cloud'))
+  if (
+    condition.includes('cloud') ||
+    condition.includes('overcast') ||
+    condition.includes('broken') ||
+    condition.includes('scattered')
+  )
+    return 'bg-gradient-to-b from-gray-400 to-gray-700';
+
+  if (
+    condition.includes('fog') ||
+    condition.includes('mist') ||
+    condition.includes('haze') ||
+    condition.includes('smoke') ||
+    condition.includes('dust') ||
+    condition.includes('ash') ||
+    condition.includes('sand')
+  )
     return 'bg-gradient-to-b from-gray-300 to-gray-500';
 
-  if (condition.includes('fog') || condition.includes('mist') || condition.includes('haze'))
-    return 'bg-gradient-to-b from-gray-200 to-gray-400';
-  
-  if (condition.includes('wind'))
+  if (condition.includes('wind') || condition.includes('breezy'))
     return 'bg-gradient-to-b from-sky-300 to-gray-400';
 
-  return 'bg-gradient-to-b from-blue-100 to-blue-300';
+  if (condition.includes('tornado') || condition.includes('hurricane'))
+    return 'bg-gradient-to-b from-black to-gray-800';
+
+  return 'bg-gradient-to-b from-gray-100 to-gray-300'; // fallback
 };
 
 const particlesInit = async (engine) => {
@@ -365,7 +381,7 @@ const particlesInit = async (engine) => {
 const getParticlesOptions = (desc = '') => {
   const condition = desc.toLowerCase();
 
-  if (condition.includes('snow')) {
+if (condition.includes('snow') || condition.includes('sleet') || condition.includes('shower snow')) {
     return {
       fullScreen: { enable: true, zIndex: 1 },
       particles: {
@@ -379,13 +395,19 @@ const getParticlesOptions = (desc = '') => {
     };
   }
 
-  if (condition.includes('rain')) {
+  if (
+    condition.includes('rain') ||
+    condition.includes('drizzle') ||
+    condition.includes('shower rain') ||
+    condition.includes('light rain') ||
+    condition.includes('moderate rain')
+  ) {
     return {
       fullScreen: { enable: true, zIndex: 1 },
       particles: {
         number: { value: 200 },
         size: { value: 2 },
-        move: { enable: true, direction: "bottom", speed: 8 },
+        move: { enable: true, direction: "bottom", speed: 10 },
         opacity: { value: 0.4 },
         shape: { type: "circle" },
         color: { value: "#89c4f4" },
@@ -407,7 +429,13 @@ const getParticlesOptions = (desc = '') => {
     };
   }
 
-  if (condition.includes('cloud')) {
+  if (
+    condition.includes('cloud') ||
+    condition.includes('overcast') ||
+    condition.includes('scattered') ||
+    condition.includes('broken clouds') ||
+    condition.includes('few clouds')
+  ) {
     return {
       fullScreen: { enable: true, zIndex: 1 },
       particles: {
@@ -421,7 +449,15 @@ const getParticlesOptions = (desc = '') => {
     };
   }
 
-  if (condition.includes('mist') || condition.includes('fog') || condition.includes('haze')) {
+  if (
+    condition.includes('mist') ||
+    condition.includes('fog') ||
+    condition.includes('haze') ||
+    condition.includes('smoke') ||
+    condition.includes('dust') ||
+    condition.includes('sand') ||
+    condition.includes('ash')
+  ) {
     return {
       fullScreen: { enable: true, zIndex: 1 },
       particles: {
@@ -444,7 +480,7 @@ const getParticlesOptions = (desc = '') => {
         move: { enable: true, speed: 6 },
         opacity: { value: 0.6 },
         shape: { type: "circle" },
-        color: { value: "fffb91" },
+        color: { value: "#fffb91" },
       },
       background: {
         color: "#000000",
@@ -452,7 +488,7 @@ const getParticlesOptions = (desc = '') => {
     };
   }
 
-  if (condition.includes('wind')) {
+  if (condition.includes('wind') || condition.includes('breezy')) {
   return {
     fullScreen: { enable: true, zIndex: 1 },
     particles: {
@@ -465,6 +501,24 @@ const getParticlesOptions = (desc = '') => {
     },
   };
 }
+
+if (condition.includes('tornado') || condition.includes('hurricane') || condition.includes('squalls')) {
+    return {
+      fullScreen: { enable: true, zIndex: 1 },
+      particles: {
+        number: { value: 150 },
+        size: { value: 4 },
+        move: { enable: true, direction: "none", speed: 10 },
+        opacity: { value: 0.7 },
+        shape: { type: "circle" },
+        color: { value: "#888" },
+      },
+      background: {
+        color: "#2b2b2b",
+      },
+    };
+  }
+
 
   return null;
 };
