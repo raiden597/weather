@@ -195,31 +195,49 @@ useEffect(() => {
   }
 }, [city]);
 
-  const getDailyForecast = () => {
-    if (!forecast || !forecast.list) return [];
+const getDailyForecast = () => {
+  if (!forecast || !forecast.list) return [];
 
-    const dailyMap = {};
+  const timezoneOffset = forecast.city?.timezone || 0;
+  const dailyMap = {};
 
-    forecast.list.forEach(item => {
-      const date = new Date(item.dt * 1000);
-      const key = date.toLocaleDateString();
+  forecast.list.forEach(item => {
+    const localTimestamp = (item.dt + timezoneOffset) * 1000;
+    const date = new Date(localTimestamp);
+    const key = date.toISOString().split('T')[0];
 
-      if (!dailyMap[key]) {
-        dailyMap[key] = {
-          temp_min: item.main.temp_min,
-          temp_max: item.main.temp_max,
-          icon: item.weather[0].icon,
-          description: item.weather[0].description,
-          dt: item.dt,
-        };
-      } else {
-        dailyMap[key].temp_min = Math.min(dailyMap[key].temp_min, item.main.temp_min);
-        dailyMap[key].temp_max = Math.max(dailyMap[key].temp_max, item.main.temp_max);
-      }
+    if (!dailyMap[key]) {
+      dailyMap[key] = {
+        items: [],
+        temp_min: item.main.temp_min,
+        temp_max: item.main.temp_max,
+      };
+    }
+
+    dailyMap[key].temp_min = Math.min(dailyMap[key].temp_min, item.main.temp_min);
+    dailyMap[key].temp_max = Math.max(dailyMap[key].temp_max, item.main.temp_max);
+    dailyMap[key].items.push(item);
+  });
+
+  return Object.entries(dailyMap)
+    .slice(0, 5)
+    .map(([key, data]) => {
+      // Pick the item closest to 12:00 PM
+      const noonTimestamp = new Date(`${key}T12:00:00Z`).getTime() / 1000 - timezoneOffset;
+      const closest = data.items.reduce((prev, curr) =>
+        Math.abs(curr.dt - noonTimestamp) < Math.abs(prev.dt - noonTimestamp) ? curr : prev
+      );
+
+      return {
+        temp_min: data.temp_min,
+        temp_max: data.temp_max,
+        icon: closest.weather[0].icon,
+        description: closest.weather[0].description,
+        dt: closest.dt,
+      };
     });
+};
 
-    return Object.values(dailyMap).slice(0, 5);
-  };
 
   const getDayName = (timestamp) => {
     return new Date(timestamp * 1000).toLocaleDateString('en-US', { weekday: 'short' });
