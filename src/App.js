@@ -438,9 +438,9 @@ if (condition.includes('snow') || condition.includes('sleet') || condition.inclu
       fullScreen: { enable: true, zIndex: 1 },
       particles: {
         number: { value: 40 },
-        size: { value: 3, random: { enable: true, minimumValue: 4 } },
-        move: { enable: true, speed: 1 },
-        opacity: { value: 0.5 },
+        size: { value: 4, random: { enable: true, minimumValue: 3 } },
+        move: { enable: true, speed: 1, direction: "none", outModes: { default: "bounce" } },
+        opacity: { value: 0.4, random: true },
         shape: { type: "circle" },
         color: { value: "#fff" }, // golden sun specks #ef8e38
       },
